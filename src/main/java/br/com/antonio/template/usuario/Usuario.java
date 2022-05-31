@@ -1,14 +1,12 @@
 package br.com.antonio.template.usuario;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 @Entity
+@Table(name = "tb_usuarios")
 public class Usuario {
 
     @Id

@@ -8,7 +8,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -40,5 +44,15 @@ public class UsuarioController {
 //            return ResponseEntity.ok(new UsuarioResponse(usuarioOptional.get()));
 //        }
 //        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/idade/entre/{idadeInicial}/ate/{idadeFinal}")
+    public ResponseEntity<List<UsuarioResponse>> buscaEntreIdade(@PathVariable Integer idadeInicial, @PathVariable Integer idadeFinal) {
+
+        List<Usuario> usuario = new ArrayList<>(usuarioRepository.findAllByIdadeBetween(idadeInicial, idadeFinal));
+
+        return ResponseEntity.ok().body(usuario.stream()
+                .map(UsuarioResponse::new)
+                .collect(Collectors.toList()));
     }
 }
