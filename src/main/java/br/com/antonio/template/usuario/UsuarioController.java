@@ -1,5 +1,6 @@
 package br.com.antonio.template.usuario;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,11 @@ public class UsuarioController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioResponse> busca(@PathVariable Long id) {
 
-        var usuario = usuarioRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "id não encontrado"));
-
+        var usuario = verificarExistencia(id);
         return ResponseEntity.ok(new UsuarioResponse(usuario));
+
+//        var usuario = usuarioRepository.findById(id).orElseThrow(() ->
+//                new ResponseStatusException(HttpStatus.NOT_FOUND, "id não encontrado"));
 
 //        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
 //        if (usuarioOptional.isPresent()) {
@@ -56,11 +58,13 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteParkingSpot(@PathVariable Long id){
 
-        var usuario = usuarioRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não existe na base de dados."));
+        var usuario = verificarExistencia(id);
 
         usuarioRepository.delete(usuario);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario removido com sucesso !");
+
+//        var usuario = usuarioRepository.findById(id).orElseThrow(() ->
+//                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não existe na base de dados."));
 
 //        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
 //        if (usuarioOptional.isEmpty()) {
@@ -69,6 +73,28 @@ public class UsuarioController {
 //        usuarioRepository.delete(usuarioOptional.get());
 //        return ResponseEntity.status(HttpStatus.OK).body("Usuario removido com sucesso !");
 
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> atualizarCadastroUsuario(@PathVariable Long id,
+                                                    @RequestBody @Valid UsuarioRequest usuarioRequest) {
+
+        var usuarioExiste = verificarExistencia(id);
+
+        var usuario = new Usuario();
+        usuarioRequest.toModel();
+        //BeanUtils.copyProperties(usuarioRequest, usuarioOptional);
+        usuario.setId(usuarioExiste.getId());
+        usuario.setNome(usuarioRequest.getNome());
+        usuario.setIdade(usuarioRequest.getIdade());
+
+        var usuarioSalvo = usuarioRepository.save(usuario);
+        return ResponseEntity.status(HttpStatus.OK).body(new UsuarioResponse(usuarioSalvo));
+    }
+
+    public Usuario verificarExistencia(Long id) {
+        return usuarioRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não existe na base de dados."));
     }
 
 }

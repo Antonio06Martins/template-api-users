@@ -13,11 +13,10 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String nome;
 
-    @Positive
-    @Min(18)
+    @Column(nullable = false)
     private Integer idade;
 
     @Deprecated
@@ -26,6 +25,18 @@ public class Usuario {
 
     public Usuario(String nome, Integer idade) {
         this.nome = nome;
+        this.idade = idade;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setIdade(Integer idade) {
         this.idade = idade;
     }
 
