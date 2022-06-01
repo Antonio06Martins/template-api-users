@@ -75,6 +75,10 @@ public class UsuarioController {
 
     }
 
+    /* O método de requisição HTTP PATCH aplica modificações parciais a um recurso.
+     O método HTTP PUT permite apenas substituições completas de um documento.
+     */
+
     @PutMapping("/{id}")
     public ResponseEntity<Object> atualizarCadastroUsuario(@PathVariable Long id,
                                                     @RequestBody @Valid UsuarioRequest usuarioRequest) {
@@ -86,6 +90,22 @@ public class UsuarioController {
         //BeanUtils.copyProperties(usuarioRequest, usuarioOptional);
         usuario.setId(usuarioExiste.getId());
         usuario.setNome(usuarioRequest.getNome());
+        usuario.setIdade(usuarioRequest.getIdade());
+
+        var usuarioSalvo = usuarioRepository.save(usuario);
+        return ResponseEntity.status(HttpStatus.OK).body(new UsuarioResponse(usuarioSalvo));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> atualizarIdadeUsuario(@PathVariable Long id,
+                                                           @RequestBody UsuarioRequest usuarioRequest) {
+
+        var usuarioExiste = verificarExistencia(id);
+
+        var usuario = new Usuario();
+        usuarioRequest.toModel();
+        usuario.setId(usuarioExiste.getId());
+        usuario.setNome(usuarioExiste.getNome());
         usuario.setIdade(usuarioRequest.getIdade());
 
         var usuarioSalvo = usuarioRepository.save(usuario);
