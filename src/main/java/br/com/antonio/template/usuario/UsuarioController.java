@@ -48,7 +48,8 @@ public class UsuarioController {
     @GetMapping(value = "/idade/entre/{idadeInicial}/ate/{idadeFinal}")
     public ResponseEntity<List<UsuarioResponse>> buscaEntreIdade(@PathVariable Integer idadeInicial, @PathVariable Integer idadeFinal) {
 
-        List<Usuario> usuario = new ArrayList<>(usuarioRepository.findAllByIdadeBetween(idadeInicial, idadeFinal));
+        //List<Usuario> usuario = new ArrayList<>(usuarioRepository.findAllByIdadeBetween(idadeInicial, idadeFinal));
+        List<Usuario> usuario = new ArrayList<>(usuarioRepository.entreIdade(idadeInicial, idadeFinal));
 
         return ResponseEntity.ok().body(usuario.stream()
                 .map(UsuarioResponse::new)
