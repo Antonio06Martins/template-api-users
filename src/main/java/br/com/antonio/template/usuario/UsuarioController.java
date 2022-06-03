@@ -21,7 +21,7 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public UsuarioResponse salva(@Valid @RequestBody UsuarioRequest usuarioRequest) {
 
         Usuario usuario = usuarioRepository.save(usuarioRequest.toModel());
